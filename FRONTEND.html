@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Class System</title>
+</head>
+<body>
+
+<h1>Questions</h1>
+<ul id="questions"></ul>
+
+<input id="questionInput" placeholder="Enter question" />
+<button onclick="addQuestion()">Add</button>
+
+<script>
+async function loadQuestions() {
+  const res = await fetch('/api/questions');
+  const data = await res.json();
+
+  const list = document.getElementById('questions');
+  list.innerHTML = "";
+
+  data.forEach(q => {
+    const li = document.createElement('li');
+    li.textContent = q.text;
+    list.appendChild(li);
+  });
+}
+
+async function addQuestion() {
+  const input = document.getElementById('questionInput');
+
+  await fetch('/api/questions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text: input.value })
+  });
+
+  input.value = "";
+  loadQuestions();
+}
+
+loadQuestions();
+</script>
+
+</body>
+</html>
